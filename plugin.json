@@ -1,11 +1,11 @@
 {
   "api_version": 1,
   "name": "ScreenshotUploader",
-  "author": "CodeHz",
+  "author": "CodeHz / xinxzk",
   "flags": [],
   "publish": {
     "tags": ["screenshots", "uploader"],
-    "description": "Screenshot auto uploader because valve don't do it. Upload screenshots to cloud when screenshot is taken.",
+    "description": "Automatic Steam screenshot uploads with persistent offline queues, retries and catch-up.",
     "image": "https://github.com/codehz/DeckScreenshotManager/raw/main/assets/logo.png"
   }
 }

@@ -1,16 +1,19 @@
 {
   "name": "screenshot-uploader",
-  "version": "0.0.3",
-  "description": "Screenshot auto uploader because valve don't do it. Upload screenshots to cloud when screenshot is taken.",
+  "version": "0.1.0",
+  "description": "Reliable Steam screenshot uploads with persistent offline queues and automatic catch-up.",
+  "packageManager": "pnpm@9.15.9",
   "type": "module",
   "scripts": {
     "build": "shx rm -rf dist && rollup -c",
     "watch": "rollup -c -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --experimental-strip-types tests/all.test.ts && python3 -m unittest discover -s tests -p 'test_*.py'",
+    "typecheck": "tsc --noEmit",
+    "package": "python3 scripts/package.py"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/codehz/DeckScreenshotManager.git"
+    "url": "git+https://github.com/xinxzk/DeckScreenshotManager.git"
   },
   "keywords": [
     "decky",
@@ -22,14 +25,15 @@
   "author": "CodeHz <codehz@outlook.com>",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/codehz/DeckScreenshotManager/issues"
+    "url": "https://github.com/xinxzk/DeckScreenshotManager/issues"
   },
-  "homepage": "https://github.com/codehz/DeckScreenshotManager#readme",
+  "homepage": "https://github.com/xinxzk/DeckScreenshotManager#readme",
   "devDependencies": {
     "@decky/rollup": "^1.0.1",
     "@types/react": "16.14.0",
     "@types/webpack": "^5.28.0",
     "react-query": "^3.39.3",
+    "rollup": "4.20.0",
     "shx": "^0.3.4",
     "tslib": "^2.6.3",
     "typescript": "^5.5.4"
