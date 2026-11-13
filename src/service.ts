@@ -17,6 +17,7 @@ export class UploadService {
   private stopped = false;
   private refreshing?: Promise<void>;
   private pauseRequested = false;
+  private settingsEpoch = 0;
   error = "";
 
   constructor() {
@@ -48,22 +49,24 @@ export class UploadService {
   }
 
   pauseImmediately(): void {
+    this.settingsEpoch += 1;
     this.pauseRequested = true;
     this.queue.options.enabled = false;
     this.publish();
   }
 
-  settingsSaved(): void { this.pauseRequested = false; }
+  settingsSaved(): void { this.settingsEpoch += 1; this.pauseRequested = false; }
 
   async refresh(): Promise<void> {
     if (this.refreshing) return this.refreshing;
+    const epoch = this.settingsEpoch;
     this.refreshing = (async () => {
       const [enabled, privacy, notification] = await Promise.all([
         api.getSetting({ key: SETTINGS.ENABLED, defaults: true }),
         api.getSetting<number>({ key: SETTINGS.PRIVACY_STATE, defaults: 2 }),
         api.getSetting({ key: SETTINGS.NOTIFICATION_ENABLED, defaults: true }),
       ]);
-      if (this.stopped) return;
+      if (this.stopped || epoch !== this.settingsEpoch) return;
       if (![2, 4, 8, 16].includes(privacy)) throw new Error("Invalid saved visibility; uploads paused.");
       this.queue.options = { enabled: enabled === true && !this.pauseRequested, privacy: privacy as Privacy };
       this.notifications = notification === true;
