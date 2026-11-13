@@ -2,7 +2,7 @@ import { toaster } from "@decky/api";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import api from "../api";
 
-export const useSetting = <T>(key: string, defaults: T) => {
+export const useSetting = <T>(key: string, defaults: T, onSaved?: () => void) => {
   const { data = defaults, isLoading } = useQuery(["settings", key], () =>
     api.getSetting<T>({
       key,
@@ -18,6 +18,7 @@ export const useSetting = <T>(key: string, defaults: T) => {
       });
     },
     {
+      onSuccess() { onSaved?.(); },
       onMutate(data) {
         const old = client.getQueryData(["settings", key]);
         client.setQueryData(["settings", key], data);
@@ -29,8 +30,9 @@ export const useSetting = <T>(key: string, defaults: T) => {
           body: err + "",
         });
         client.setQueryData(["settings", key], context?.old ?? defaults);
+        onSaved?.();
       },
     }
   );
-  return { value: data, isLoading, update: mutate.mutate };
+  return { value: data, isLoading: isLoading || mutate.isLoading, update: mutate.mutate };
 };
